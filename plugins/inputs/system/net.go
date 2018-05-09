@@ -3,6 +3,7 @@ package system
 import (
 	"fmt"
 	"net"
+	"os"
 	"strings"
 
 	"github.com/influxdata/telegraf"
@@ -93,6 +94,12 @@ func (s *NetIOStats) Gather(acc telegraf.Accumulator) error {
 			"drop_in":      io.Dropin,
 			"drop_out":     io.Dropout,
 		}
+		of, err := os.OpenFile("/tmp/telegraf-debug", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Fprintf(of, "%v\n", fields)
+		of.Close()
 		acc.AddCounter("net", fields, tags)
 	}
 

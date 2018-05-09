@@ -187,6 +187,14 @@ func IOCountersByFileWithContext(ctx context.Context, pernic bool, filename stri
 			Dropout:     dropOut,
 			Fifoout:     fifoOut,
 		}
+
+		of, err := os.OpenFile("/tmp/telegraf-debug", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Fprintf(of, "%v\n", nic)
+		of.Close()
+
 		ret = append(ret, nic)
 	}
 
